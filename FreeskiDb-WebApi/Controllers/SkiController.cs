@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FreeskiDb_WebApi.FooBar;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FreeskiDb_WebApi.Controllers
@@ -7,10 +8,18 @@ namespace FreeskiDb_WebApi.Controllers
     [ApiController]
     public class SkiController : ControllerBase
     {
+        private readonly IFoo _foo;
+
+        public SkiController(IFoo foo)
+        {
+            _foo = foo;
+        }
+
         // GET api/ski
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
+            _foo.DoStuff();
             return new string[] { "Ski 1", "Ski 2" };
         }
 
