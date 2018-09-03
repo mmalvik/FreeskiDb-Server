@@ -12,6 +12,7 @@
     <PackageReference Include="LightInject" Version="5.1.8" />
     <PackageReference Include="LightInject.Microsoft.AspNetCore.Hosting" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.Azure.DocumentDB" Version="1.22.0" />
   </ItemGroup>
 
 </Project>
