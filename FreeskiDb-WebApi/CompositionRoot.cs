@@ -1,7 +1,7 @@
-﻿using FreeskiDb_WebApi.FooBar;
+﻿using FreeskiDb.WebApi.FooBar;
 using LightInject;
 
-namespace FreeskiDb_WebApi
+namespace FreeskiDb.WebApi
 {
     public class CompositionRoot : ICompositionRoot
     {

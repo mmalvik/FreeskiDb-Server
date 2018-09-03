@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace FreeskiDb_WebApi
+namespace FreeskiDb.WebApi
 {
     public class Program
     {

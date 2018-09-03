@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using FreeskiDb_WebApi.FooBar;
+using FreeskiDb.WebApi.FooBar;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FreeskiDb_WebApi.Controllers
+namespace FreeskiDb.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

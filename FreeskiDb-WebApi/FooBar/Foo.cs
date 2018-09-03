@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FreeskiDb_WebApi.FooBar
+namespace FreeskiDb.WebApi.FooBar
 {
     public class Foo : IFoo
     {

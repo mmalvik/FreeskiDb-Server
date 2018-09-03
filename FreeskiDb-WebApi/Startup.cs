@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FreeskiDb_WebApi
+namespace FreeskiDb.WebApi
 {
     public class Startup
     {
