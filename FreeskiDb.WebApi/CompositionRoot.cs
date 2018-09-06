@@ -1,4 +1,4 @@
-﻿using FreeskiDb.WebApi.FooBar;
+﻿using FreeskiDb.WebApi.Repository;
 using LightInject;
 
 namespace FreeskiDb.WebApi
@@ -7,7 +7,7 @@ namespace FreeskiDb.WebApi
     {
         public void Compose(IServiceRegistry serviceRegistry)
         {
-            serviceRegistry.Register<IFoo, Foo>(new PerRequestLifeTime());
+            serviceRegistry.Register<ISkiRepository, SkiRepository>(new PerContainerLifetime());
         }
     }
 }

@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using FreeskiDb.WebApi.FooBar;
+﻿using System.Threading.Tasks;
+using FreeskiDb.WebApi.Documents;
+using FreeskiDb.WebApi.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FreeskiDb.WebApi.Controllers
@@ -8,32 +9,34 @@ namespace FreeskiDb.WebApi.Controllers
     [ApiController]
     public class SkiController : ControllerBase
     {
-        private readonly IFoo _foo;
+        private readonly ISkiRepository _skiRepository;
 
-        public SkiController(IFoo foo)
+        public SkiController(ISkiRepository skiRepository)
         {
-            _foo = foo;
+            _skiRepository = skiRepository;
         }
 
         // GET api/ski
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public async Task<IActionResult> Get()
         {
-            _foo.DoStuff();
-            return new string[] { "Ski 1", "Ski 2" };
+            var result = await _skiRepository.List();
+            return Ok(result);
         }
 
         // GET api/ski/5
         [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return "Ski 1";
+            var result = await _skiRepository.GetById(id);
+            return Ok(result);
         }
 
         // POST api/ski
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task Post([FromBody] Ski value)
         {
+            await _skiRepository.Add(value);
         }
 
         // PUT api/ski/5

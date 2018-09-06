@@ -1,4 +1,6 @@
-﻿using LightInject;
+﻿using System;
+using FreeskiDb.WebApi.CosmosDb;
+using LightInject;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -25,6 +27,20 @@ namespace FreeskiDb.WebApi
         // Use this method to add services directly to LightInject
         public void ConfigureContainer(IServiceContainer container)
         {
+            var cosmosUri = Configuration.GetValue<string>("CosmosUri");
+            var cosmosKey = Configuration.GetValue<string>("CosmosKey");
+
+            if (string.IsNullOrEmpty(cosmosUri))
+            {
+                throw new ArgumentException("CosmosUri is not configured");
+            }
+
+            if (string.IsNullOrEmpty(cosmosKey))
+            {
+                throw new ArgumentException("CosmosKey is not configured");
+            }
+
+            container.Register<ICosmosClient>(f => new CosmosClient(cosmosUri, cosmosKey), new PerContainerLifetime());
             container.RegisterFrom<CompositionRoot>();
         }
 
