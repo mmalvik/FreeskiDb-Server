@@ -26,7 +26,7 @@ namespace FreeskiDb.WebApi.Controllers
 
         // GET api/ski/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(string id)
         {
             var result = await _skiRepository.GetById(id);
             return Ok(result);

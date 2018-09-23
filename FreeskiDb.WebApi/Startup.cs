@@ -1,9 +1,11 @@
 ﻿using System;
+using FreeskiDb.WebApi.Config;
 using FreeskiDb.WebApi.CosmosDb;
-using LightInject;
+using FreeskiDb.WebApi.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Search;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,26 +24,15 @@ namespace FreeskiDb.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-        }
 
-        // Use this method to add services directly to LightInject
-        public void ConfigureContainer(IServiceContainer container)
-        {
-            var cosmosUri = Configuration.GetValue<string>("CosmosUri");
-            var cosmosKey = Configuration.GetValue<string>("CosmosKey");
+            ConfigurationValidator.Vaildate(Configuration);
 
-            if (string.IsNullOrEmpty(cosmosUri))
-            {
-                throw new ArgumentException("CosmosUri is not configured");
-            }
+            var config = Configuration.Get<FreeskiDbConfiguration>();
+            services.AddSingleton(config);
 
-            if (string.IsNullOrEmpty(cosmosKey))
-            {
-                throw new ArgumentException("CosmosKey is not configured");
-            }
-
-            container.Register<ICosmosClient>(f => new CosmosClient(cosmosUri, cosmosKey), new PerContainerLifetime());
-            container.RegisterFrom<CompositionRoot>();
+            services.AddSingleton<ICosmosClient>(serviceProvider => new CosmosClient(config.CosmosUri, config.CosmosKey));
+            services.AddSingleton<ISkiRepository, SkiRepository>();
+            services.AddSingleton<ISearchIndexClient>(CreateSearchIndexClient);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,6 +49,16 @@ namespace FreeskiDb.WebApi
 
             app.UseHttpsRedirection();
             app.UseMvc();
+        }
+
+        private static SearchIndexClient CreateSearchIndexClient(IServiceProvider serviceProvider)
+        {
+            var config = serviceProvider.GetService<FreeskiDbConfiguration>();
+            var queryApiKey = config.AzureSearchKey;
+            var searchServiceName = config.AzureSearchServiceName;
+
+            var searchClient = new SearchIndexClient(searchServiceName, "ski-index", new SearchCredentials(queryApiKey));
+            return searchClient;
         }
     }
 }

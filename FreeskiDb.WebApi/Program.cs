@@ -1,5 +1,4 @@
-﻿using LightInject.Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 
@@ -22,7 +21,6 @@ namespace FreeskiDb.WebApi
 
             return WebHost.CreateDefaultBuilder(args)
                 .UseConfiguration(configuration)
-                .UseLightInject()
                 .UseStartup<Startup>();
         }
     }

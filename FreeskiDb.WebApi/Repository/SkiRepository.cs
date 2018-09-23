@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using FreeskiDb.WebApi.CosmosDb;
 using FreeskiDb.WebApi.Documents;
+using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 
 namespace FreeskiDb.WebApi.Repository
@@ -20,9 +21,15 @@ namespace FreeskiDb.WebApi.Repository
             _docCollectionUri = UriFactory.CreateDocumentCollectionUri("FreeskiDb", "TestCollection");
         }
 
-        public async Task<Ski> GetById(int id)
+        public async Task<Ski> GetById(string id)
         {
-            var skis = await _cosmosClient.ExecuteQuery<Ski>(_docCollectionUri, "SELECT * FROM TestCollection");
+            var parameters = new SqlParameterCollection
+            {
+                new SqlParameter("@id", id)
+            };
+            var query = new SqlQuerySpec("SELECT * FROM c WHERE c.id = @id", parameters);
+            var skis = await _cosmosClient.ExecuteQuery<Ski>(_docCollectionUri, query);
+
             return skis.FirstOrDefault();
         }
 

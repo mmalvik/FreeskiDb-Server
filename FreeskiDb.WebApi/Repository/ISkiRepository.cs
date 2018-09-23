@@ -8,7 +8,7 @@ namespace FreeskiDb.WebApi.Repository
 {
     public interface ISkiRepository
     {
-        Task<Ski> GetById(int id);
+        Task<Ski> GetById(string id);
         Task<IEnumerable<Ski>> List();
         IEnumerable<Ski> List(Expression<Func<Ski, bool>> predicate);
         Task Add(Ski entity);
