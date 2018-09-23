@@ -1,0 +1,128 @@
+{
+    "name": "string",
+    "type": "Microsoft.ContainerInstance/containerGroups",
+    "apiVersion": "2018-06-01",
+    "location": "string",
+    "tags": {},
+    "properties": {
+      "containers": [
+        {
+          "name": "string",
+          "properties": {
+            "image": "string",
+            "command": [
+              "string"
+            ],
+            "ports": [
+              {
+                "protocol": "string",
+                "port": "integer"
+              }
+            ],
+            "environmentVariables": [
+              {
+                "name": "string",
+                "value": "string",
+                "secureValue": "string"
+              }
+            ],
+            "resources": {
+              "requests": {
+                "memoryInGB": "number",
+                "cpu": "number"
+              },
+              "limits": {
+                "memoryInGB": "number",
+                "cpu": "number"
+              }
+            },
+            "volumeMounts": [
+              {
+                "name": "string",
+                "mountPath": "string",
+                "readOnly": boolean
+              }
+            ],
+            "livenessProbe": {
+              "exec": {
+                "command": [
+                  "string"
+                ]
+              },
+              "httpGet": {
+                "path": "string",
+                "port": "integer",
+                "scheme": "string"
+              },
+              "initialDelaySeconds": "integer",
+              "periodSeconds": "integer",
+              "failureThreshold": "integer",
+              "successThreshold": "integer",
+              "timeoutSeconds": "integer"
+            },
+            "readinessProbe": {
+              "exec": {
+                "command": [
+                  "string"
+                ]
+              },
+              "httpGet": {
+                "path": "string",
+                "port": "integer",
+                "scheme": "string"
+              },
+              "initialDelaySeconds": "integer",
+              "periodSeconds": "integer",
+              "failureThreshold": "integer",
+              "successThreshold": "integer",
+              "timeoutSeconds": "integer"
+            }
+          }
+        }
+      ],
+      "imageRegistryCredentials": [
+        {
+          "server": "string",
+          "username": "string",
+          "password": "string"
+        }
+      ],
+      "restartPolicy": "string",
+      "ipAddress": {
+        "ports": [
+          {
+            "protocol": "string",
+            "port": "integer"
+          }
+        ],
+        "type": "Public",
+        "ip": "string",
+        "dnsNameLabel": "string"
+      },
+      "osType": "string",
+      "volumes": [
+        {
+          "name": "string",
+          "azureFile": {
+            "shareName": "string",
+            "readOnly": boolean,
+            "storageAccountName": "string",
+            "storageAccountKey": "string"
+          },
+          "emptyDir": {},
+          "secret": {},
+          "gitRepo": {
+            "directory": "string",
+            "repository": "string",
+            "revision": "string"
+          }
+        }
+      ],
+      "diagnostics": {
+        "logAnalytics": {
+          "workspaceId": "string",
+          "workspaceKey": "string"
+        }
+      }
+    }
+  }
