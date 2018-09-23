@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using FreeskiDb.WebApi.AzureSearch;
 using FreeskiDb.WebApi.Documents;
+using FreeskiDb.WebApi.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Search;
 
 namespace FreeskiDb.WebApi.Controllers
 {
@@ -10,18 +12,23 @@ namespace FreeskiDb.WebApi.Controllers
     [ApiController]
     public class SearchController : ControllerBase
     {
-        private readonly ISearchIndexClient _searchIndexClient;
+        private readonly ISearchClient _searchClient;
 
-        public SearchController(ISearchIndexClient searchIndexClient)
+        public SearchController(ISearchClient searchClient)
         {
-            _searchIndexClient = searchIndexClient;
+            _searchClient = searchClient;
         }
 
         // GET api/ski
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<ActionResult<IEnumerable<Ski>>> Get([RequiredFromQuery] string query)
         {
-            var searchResult = await _searchIndexClient.Documents.SearchAsync<Ski>("k2");
+            var searchResult = await _searchClient.Search<Ski>(query);
+            if (searchResult.Results.Count <= 0)
+            {
+                return Ok("No search results found");;
+            }
+
             var skis = searchResult.Results.OrderBy(x => x.Score).Select(y => y.Document);
             return Ok(skis);
         }

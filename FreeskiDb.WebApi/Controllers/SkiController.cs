@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FreeskiDb.WebApi.Documents;
 using FreeskiDb.WebApi.Repository;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,7 @@ namespace FreeskiDb.WebApi.Controllers
 
         // GET api/ski
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<ActionResult<IEnumerable<Ski>>> Get()
         {
             var result = await _skiRepository.List();
             return Ok(result);
@@ -26,7 +27,7 @@ namespace FreeskiDb.WebApi.Controllers
 
         // GET api/ski/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id)
+        public async Task<ActionResult<Ski>> Get(string id)
         {
             var result = await _skiRepository.GetById(id);
             return Ok(result);

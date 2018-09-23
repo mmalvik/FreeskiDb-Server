@@ -6,7 +6,6 @@ using FreeskiDb.WebApi.Repository;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Azure.Search;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -20,12 +19,10 @@ namespace Test.FreeskiDb.WebApi
         private readonly HttpClient _client;
 
         private readonly Mock<ISkiRepository> _skiRepositoryMock;
-        private readonly Mock<ISearchIndexClient> _searchClientMock;
 
         public SkiApiTests()
         {
             _skiRepositoryMock = new Mock<ISkiRepository>();
-            _searchClientMock = new Mock<ISearchIndexClient>();
 
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", false).Build();
 
@@ -48,7 +45,6 @@ namespace Test.FreeskiDb.WebApi
         private void AddMocks(IServiceCollection services)
         {
             services.AddSingleton(_skiRepositoryMock.Object);
-            services.AddSingleton(_searchClientMock.Object);
         }
 
         public void Dispose()
