@@ -1,0 +1,1 @@
+docker run -it -p 7000:80 --env-file local_variables.env mmalvik/freeskidb:latest
