@@ -17,6 +17,19 @@ namespace FreeskiDb.Persistence.CosmosDb
             _documentClient = new DocumentClient(new Uri(cosmosDbUri), cosmosDbPrimaryKey);
         }
 
+        public async Task CreateDatabaseIfNotExistsAsync(string databaseId)
+        {
+            await _documentClient.CreateDatabaseIfNotExistsAsync(new Database { Id = databaseId });
+        }
+
+        public async Task CreateCollectionIfNotExistsAsync(string databaseId, string collectionId)
+        {
+            await _documentClient.CreateDocumentCollectionIfNotExistsAsync(
+                UriFactory.CreateDatabaseUri(databaseId),
+                new DocumentCollection { Id = collectionId },
+                new RequestOptions { OfferThroughput = 400 });
+        }
+
         public async Task CreateDocument(Uri documentCollectionUri, object document)
         {
             await _documentClient.CreateDocumentAsync(documentCollectionUri, document);

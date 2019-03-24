@@ -18,7 +18,7 @@ namespace FreeskiDb.WebApi.Repository
         public SkiRepository(ICosmosClient cosmosClient)
         {
             _cosmosClient = cosmosClient;
-            _docCollectionUri = UriFactory.CreateDocumentCollectionUri("FreeskiDb", "TestCollection");
+            _docCollectionUri = UriFactory.CreateDocumentCollectionUri("FreeskiDb", "SkiCollection");
         }
 
         public async Task<Ski> GetById(string id)

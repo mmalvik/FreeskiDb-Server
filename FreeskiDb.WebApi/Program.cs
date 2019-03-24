@@ -15,7 +15,7 @@ namespace FreeskiDb.WebApi
         {
             var configuration = new ConfigurationBuilder()
                 //.AddJsonFile("appsettings.json", false, false)
-                //.AddJsonFile("appsettings.Development.json", true, false)
+                .AddJsonFile("appsettings.Development.json", true, false)
                 .AddEnvironmentVariables()
                 .Build();
 
