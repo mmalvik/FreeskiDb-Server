@@ -73,6 +73,12 @@ namespace FreeskiDb.WebApi
         {
             var databaseId = "FreeskiDb";
             var collectionId = "SkiCollection";
+
+            if (cosmosClient.DoesDatabaseExist(databaseId))
+            {
+                return;
+            }
+
             var docCollectionUri = UriFactory.CreateDocumentCollectionUri(databaseId, collectionId);
             cosmosClient.CreateDatabaseIfNotExistsAsync(databaseId).Wait();
             cosmosClient.CreateCollectionIfNotExistsAsync(databaseId, collectionId).Wait();

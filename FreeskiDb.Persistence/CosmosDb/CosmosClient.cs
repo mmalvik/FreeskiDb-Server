@@ -22,6 +22,19 @@ namespace FreeskiDb.Persistence.CosmosDb
             await _documentClient.CreateDatabaseIfNotExistsAsync(new Database { Id = databaseId });
         }
 
+        public bool DoesDatabaseExist(string databaseId)
+        {
+            try
+            {
+                var db = _documentClient.ReadDatabaseAsync(UriFactory.CreateDatabaseUri(databaseId)).Result;
+                return db.Resource != null;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         public async Task CreateCollectionIfNotExistsAsync(string databaseId, string collectionId)
         {
             await _documentClient.CreateDocumentCollectionIfNotExistsAsync(
