@@ -9,9 +9,11 @@ namespace FreeskiDb.Persistence.CosmosDb
     {
         Task CreateDatabaseIfNotExistsAsync(string databaseId);
 
-        bool DoesDatabaseExist(string databaseId);
+        Task DeleteDatabaseAsync(string databaseId);
 
         Task CreateCollectionIfNotExistsAsync(string databaseId, string collectionId);
+
+        Task DeleteCollectionAsync(string databaseId, string collectionId);
 
         Task CreateDocument(Uri documentCollectionUri, object document);
 

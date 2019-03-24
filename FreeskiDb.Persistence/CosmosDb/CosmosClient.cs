@@ -22,17 +22,9 @@ namespace FreeskiDb.Persistence.CosmosDb
             await _documentClient.CreateDatabaseIfNotExistsAsync(new Database { Id = databaseId });
         }
 
-        public bool DoesDatabaseExist(string databaseId)
+        public async Task DeleteDatabaseAsync(string databaseId)
         {
-            try
-            {
-                var db = _documentClient.ReadDatabaseAsync(UriFactory.CreateDatabaseUri(databaseId)).Result;
-                return db.Resource != null;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            await _documentClient.DeleteDatabaseAsync(UriFactory.CreateDatabaseUri(databaseId));
         }
 
         public async Task CreateCollectionIfNotExistsAsync(string databaseId, string collectionId)
@@ -41,6 +33,12 @@ namespace FreeskiDb.Persistence.CosmosDb
                 UriFactory.CreateDatabaseUri(databaseId),
                 new DocumentCollection { Id = collectionId },
                 new RequestOptions { OfferThroughput = 400 });
+        }
+
+        public async Task DeleteCollectionAsync(string databaseId, string collectionId)
+        {
+            await _documentClient.DeleteDocumentCollectionAsync(
+                UriFactory.CreateDocumentCollectionUri(databaseId, collectionId));
         }
 
         public async Task CreateDocument(Uri documentCollectionUri, object document)
