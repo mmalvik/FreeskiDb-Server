@@ -1,7 +1,7 @@
 ﻿using System;
+using FreeskiDb.Persistence.CosmosDb;
 using FreeskiDb.WebApi.AzureSearch;
 using FreeskiDb.WebApi.Config;
-using FreeskiDb.WebApi.CosmosDb;
 using FreeskiDb.WebApi.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

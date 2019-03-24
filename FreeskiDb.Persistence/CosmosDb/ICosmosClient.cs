@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
 
-namespace FreeskiDb.WebApi.CosmosDb
+namespace FreeskiDb.Persistence.CosmosDb
 {
     public interface ICosmosClient
     {

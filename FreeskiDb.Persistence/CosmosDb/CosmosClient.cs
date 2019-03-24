@@ -6,7 +6,7 @@ using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
 
-namespace FreeskiDb.WebApi.CosmosDb
+namespace FreeskiDb.Persistence.CosmosDb
 {
     public class CosmosClient : ICosmosClient
     {
