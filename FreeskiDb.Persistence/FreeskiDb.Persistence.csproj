@@ -5,13 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="Microsoft.Azure.DocumentDB.Core">
-      <HintPath>..\..\..\Users\Marius\.nuget\packages\microsoft.azure.documentdb.core\2.1.0\lib\netstandard1.6\Microsoft.Azure.DocumentDB.Core.dll</HintPath>
-    </Reference>
+    <PackageReference Include="MediatR" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Skis\" />
+    <Reference Include="Microsoft.Azure.DocumentDB.Core">
+      <HintPath>..\..\..\Users\Marius\.nuget\packages\microsoft.azure.documentdb.core\2.1.0\lib\netstandard1.6\Microsoft.Azure.DocumentDB.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

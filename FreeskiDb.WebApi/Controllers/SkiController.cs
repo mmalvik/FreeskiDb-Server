@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FreeskiDb.Persistence.Entities;
+using FreeskiDb.Persistence.Skis.Queries.GetSkiList;
 using FreeskiDb.WebApi.Repository;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FreeskiDb.WebApi.Controllers
@@ -11,18 +12,21 @@ namespace FreeskiDb.WebApi.Controllers
     public class SkiController : ControllerBase
     {
         private readonly ISkiRepository _skiRepository;
+        private readonly IMediator _mediator;
 
-        public SkiController(ISkiRepository skiRepository)
+        public SkiController(ISkiRepository skiRepository, IMediator mediator)
         {
             _skiRepository = skiRepository;
+            _mediator = mediator;
         }
 
         // GET api/ski
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Ski>>> Get()
+        public async Task<ActionResult<SkiListModel>> Get()
         {
-            var result = await _skiRepository.List();
-            return Ok(result);
+            var res = await _mediator.Send(new GetSkiListQuery());
+            //var result = await _skiRepository.List();
+            return Ok(res);
         }
 
         // GET api/ski/5
