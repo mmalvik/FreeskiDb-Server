@@ -1,6 +1,6 @@
-﻿ using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using FreeskiDb.WebApi.Documents;
+using FreeskiDb.Persistence.Entities;
 using FreeskiDb.WebApi.Repository;
 using Microsoft.AspNetCore.Mvc;
 

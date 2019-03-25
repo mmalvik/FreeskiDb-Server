@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FreeskiDb.Persistence.Entities;
 using FreeskiDb.WebApi.AzureSearch;
-using FreeskiDb.WebApi.Documents;
 using FreeskiDb.WebApi.Extensions;
 using Microsoft.AspNetCore.Mvc;
 

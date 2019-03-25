@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using FreeskiDb.WebApi.Documents;
+using FreeskiDb.Persistence.Entities;
 
 namespace FreeskiDb.WebApi.Repository
 {

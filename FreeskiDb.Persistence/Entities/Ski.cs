@@ -1,4 +1,4 @@
-﻿namespace FreeskiDb.WebApi.Documents
+﻿namespace FreeskiDb.Persistence.Entities
 {
     public class Ski
     {

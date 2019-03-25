@@ -23,7 +23,7 @@ namespace FreeskiDb.Persistence.CosmosDb
         private static void VerifyEmulatorInstalled()
         {
             var noEmulatorMessage = new StringBuilder("This requires CosmosDB Emulator!");
-            noEmulatorMessage.Append("Go to https://aka.ms/documentdb-emulator-docs to download and install");
+            noEmulatorMessage.AppendLine("Go to https://aka.ms/documentdb-emulator-docs to download and install");
 
             var emulatorPath = Environment.ExpandEnvironmentVariables(@"%ProgramFiles%\Azure Cosmos DB Emulator\CosmosDB.Emulator.exe");
             if (!File.Exists(emulatorPath))
