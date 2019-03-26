@@ -4,7 +4,6 @@ using FreeskiDb.Persistence.Entities;
 using FreeskiDb.Persistence.Skis.Queries.GetSkiList;
 using FreeskiDb.WebApi.AzureSearch;
 using FreeskiDb.WebApi.Config;
-using FreeskiDb.WebApi.Repository;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,7 +34,6 @@ namespace FreeskiDb.WebApi
             services.AddSingleton(config);
 
             services.AddSingleton<ICosmosClient>(serviceProvider => new CosmosClient(config.CosmosUri, config.CosmosKey));
-            services.AddSingleton<ISkiRepository, SkiRepository>();
 
             services.AddMediatR(typeof(GetSkiListQueryHandler));
 

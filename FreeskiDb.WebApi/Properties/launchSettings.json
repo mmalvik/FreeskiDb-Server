@@ -20,7 +20,7 @@
     "FreeskiDb_WebApi": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/ski",
+      "launchUrl": "api/ski/0aee6b26-1912-4773-bbf4-0d26e307b50c",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

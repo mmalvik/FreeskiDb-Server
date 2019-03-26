@@ -2,7 +2,6 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FreeskiDb.WebApi;
-using FreeskiDb.WebApi.Repository;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
@@ -18,12 +17,8 @@ namespace Test.FreeskiDb.WebApi
         private readonly TestServer _server;
         private readonly HttpClient _client;
 
-        private readonly Mock<ISkiRepository> _skiRepositoryMock;
-
         public SkiApiTests()
         {
-            _skiRepositoryMock = new Mock<ISkiRepository>();
-
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", false).Build();
 
             _server = new TestServer(WebHost.CreateDefaultBuilder()
@@ -38,13 +33,11 @@ namespace Test.FreeskiDb.WebApi
         {
             var response = await _client.GetAsync("api/ski");
 
-            _skiRepositoryMock.Verify(x => x.List(), Times.Once);
             response.EnsureSuccessStatusCode();
         }
 
         private void AddMocks(IServiceCollection services)
         {
-            services.AddSingleton(_skiRepositoryMock.Object);
         }
 
         public void Dispose()

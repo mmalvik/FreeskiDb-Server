@@ -1,7 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using FreeskiDb.Persistence.Entities;
+using FreeskiDb.Persistence.Skis.Queries.GetSkiDetails;
 using FreeskiDb.Persistence.Skis.Queries.GetSkiList;
-using FreeskiDb.WebApi.Repository;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,12 +12,10 @@ namespace FreeskiDb.WebApi.Controllers
     [ApiController]
     public class SkiController : ControllerBase
     {
-        private readonly ISkiRepository _skiRepository;
         private readonly IMediator _mediator;
 
-        public SkiController(ISkiRepository skiRepository, IMediator mediator)
+        public SkiController(IMediator mediator)
         {
-            _skiRepository = skiRepository;
             _mediator = mediator;
         }
 
@@ -24,24 +23,24 @@ namespace FreeskiDb.WebApi.Controllers
         [HttpGet]
         public async Task<ActionResult<SkiListModel>> Get()
         {
-            var res = await _mediator.Send(new GetSkiListQuery());
-            //var result = await _skiRepository.List();
-            return Ok(res);
+            var result = await _mediator.Send(new GetSkiListQuery());
+            return Ok(result);
         }
 
         // GET api/ski/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Ski>> Get(string id)
+        public async Task<ActionResult<SkiDetails>> Get(string id)
         {
-            var result = await _skiRepository.GetById(id);
-            return Ok(result);
+            var guid = Guid.Parse(id);
+            var result = await _mediator.Send(new GetSkiDetailsQuery(guid));
+            return result;
         }
 
         // POST api/ski
         [HttpPost]
         public async Task Post([FromBody] Ski value)
         {
-            await _skiRepository.Add(value);
+            return;
         }
 
         // PUT api/ski/5
