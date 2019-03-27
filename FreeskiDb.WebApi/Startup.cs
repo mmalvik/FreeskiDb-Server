@@ -2,13 +2,11 @@
 using FreeskiDb.Persistence.CosmosDb;
 using FreeskiDb.Persistence.Entities;
 using FreeskiDb.Persistence.Skis.Queries.GetSkiList;
-using FreeskiDb.WebApi.AzureSearch;
 using FreeskiDb.WebApi.Config;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -33,11 +31,9 @@ namespace FreeskiDb.WebApi
             var config = Configuration.Get<FreeskiDbConfiguration>();
             services.AddSingleton(config);
 
-            services.AddSingleton<ICosmosClient>(serviceProvider => new CosmosClient(config.CosmosUri, config.CosmosKey));
+            services.AddSingleton<ICosmosClient>(CreateCosmosClient);
 
             services.AddMediatR(typeof(GetSkiListQueryHandler));
-
-            //services.AddSingleton<ISearchClient>(CreateSearchIndexClient);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,30 +57,30 @@ namespace FreeskiDb.WebApi
             }
         }
 
-        private static SearchClient CreateSearchIndexClient(IServiceProvider serviceProvider)
+        private static CosmosClient CreateCosmosClient(IServiceProvider serviceProvider)
         {
             var config = serviceProvider.GetService<FreeskiDbConfiguration>();
-            var queryApiKey = config.AzureSearchKey;
-            var searchServiceName = config.AzureSearchServiceName;
+            var cosmosClient = new CosmosClient(new CosmosConfiguration
+            {
+                CosmosUri = config.CosmosUri,
+                CosmosKey = config.CosmosKey,
+                DatabaseId = "FreeskiDb",
+                CollectionId = "SkiCollection"
+            });
 
-            var searchClient = new SearchClient(searchServiceName, "ski-index", queryApiKey);
-            return searchClient;
+            return cosmosClient;
         }
 
         private void CreateDevData(ICosmosClient cosmosClient)
         {
             CosmosEmulator.Verify();
 
-            var databaseId = "FreeskiDb";
-            var collectionId = "SkiCollection";
+            cosmosClient.DeleteDatabaseAsync().Wait();
+            cosmosClient.CreateDatabaseIfNotExistsAsync().Wait();
+            cosmosClient.CreateCollectionIfNotExistsAsync().Wait();
 
-            var docCollectionUri = UriFactory.CreateDocumentCollectionUri(databaseId, collectionId);
-            cosmosClient.DeleteDatabaseAsync(databaseId).Wait();
-            cosmosClient.CreateDatabaseIfNotExistsAsync(databaseId).Wait();
-            cosmosClient.CreateCollectionIfNotExistsAsync(databaseId, collectionId).Wait();
-
-            cosmosClient.CreateDocument(docCollectionUri, new Ski("K2", "Hellbent"));
-            cosmosClient.CreateDocument(docCollectionUri, new Ski("4FRNT", "Hoji"));
+            cosmosClient.CreateDocument(new Ski("K2", "Hellbent"));
+            cosmosClient.CreateDocument(new Ski("4FRNT", "Hoji"));
         }
     }
 }

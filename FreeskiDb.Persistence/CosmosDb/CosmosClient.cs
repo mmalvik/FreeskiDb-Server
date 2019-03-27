@@ -11,45 +11,51 @@ namespace FreeskiDb.Persistence.CosmosDb
     public class CosmosClient : ICosmosClient
     {
         private readonly DocumentClient _documentClient;
+        private readonly CosmosConfiguration _configuration;
+        private readonly Uri _databaseUri;
+        private readonly Uri _documentCollectionUri;
 
-        public CosmosClient(string cosmosDbUri, string cosmosDbPrimaryKey)
+        public CosmosClient(CosmosConfiguration configuration)
         {
-            _documentClient = new DocumentClient(new Uri(cosmosDbUri), cosmosDbPrimaryKey);
+            _configuration = configuration;
+            _documentClient = new DocumentClient(new Uri(configuration.CosmosUri), configuration.CosmosKey);
+            _databaseUri = UriFactory.CreateDatabaseUri(configuration.DatabaseId);
+            _documentCollectionUri =
+                UriFactory.CreateDocumentCollectionUri(configuration.DatabaseId, configuration.CollectionId);
         }
 
-        public async Task CreateDatabaseIfNotExistsAsync(string databaseId)
+        public async Task CreateDatabaseIfNotExistsAsync()
         {
-            await _documentClient.CreateDatabaseIfNotExistsAsync(new Database { Id = databaseId });
+            await _documentClient.CreateDatabaseIfNotExistsAsync(new Database { Id = _configuration.DatabaseId });
         }
 
-        public async Task DeleteDatabaseAsync(string databaseId)
+        public async Task DeleteDatabaseAsync()
         {
-            await _documentClient.DeleteDatabaseAsync(UriFactory.CreateDatabaseUri(databaseId));
+            await _documentClient.DeleteDatabaseAsync(_databaseUri);
         }
 
-        public async Task CreateCollectionIfNotExistsAsync(string databaseId, string collectionId)
+        public async Task CreateCollectionIfNotExistsAsync()
         {
             await _documentClient.CreateDocumentCollectionIfNotExistsAsync(
-                UriFactory.CreateDatabaseUri(databaseId),
-                new DocumentCollection { Id = collectionId },
+                UriFactory.CreateDatabaseUri(_configuration.DatabaseId),
+                new DocumentCollection { Id = _configuration.CollectionId },
                 new RequestOptions { OfferThroughput = 400 });
         }
 
-        public async Task DeleteCollectionAsync(string databaseId, string collectionId)
+        public async Task DeleteCollectionAsync()
         {
-            await _documentClient.DeleteDocumentCollectionAsync(
-                UriFactory.CreateDocumentCollectionUri(databaseId, collectionId));
+            await _documentClient.DeleteDocumentCollectionAsync(_documentCollectionUri);
         }
 
-        public async Task CreateDocument(Uri documentCollectionUri, object document)
+        public async Task CreateDocument(object document)
         {
-            await _documentClient.CreateDocumentAsync(documentCollectionUri, document);
+            await _documentClient.CreateDocumentAsync(_documentCollectionUri, document);
         }
 
-        public async Task<IEnumerable<T>> ExecuteQuery<T>(Uri documentCollectionUri, string query)
+        public async Task<IEnumerable<T>> ExecuteQuery<T>(string query)
         {
             var queryResult = new List<T>();
-            var querySetup = _documentClient.CreateDocumentQuery<T>(documentCollectionUri, query).AsDocumentQuery();
+            var querySetup = _documentClient.CreateDocumentQuery<T>(_documentCollectionUri, query).AsDocumentQuery();
 
             while (querySetup.HasMoreResults)
             {
@@ -59,10 +65,10 @@ namespace FreeskiDb.Persistence.CosmosDb
             return queryResult.AsEnumerable();
         }
 
-        public async Task<IEnumerable<T>> ExecuteQuery<T>(Uri documentCollectionUri, SqlQuerySpec querySpec)
+        public async Task<IEnumerable<T>> ExecuteQuery<T>(SqlQuerySpec querySpec)
         {
             var queryResult = new List<T>();
-            var querySetup = _documentClient.CreateDocumentQuery<T>(documentCollectionUri, querySpec).AsDocumentQuery();
+            var querySetup = _documentClient.CreateDocumentQuery<T>(_documentCollectionUri, querySpec).AsDocumentQuery();
 
             while (querySetup.HasMoreResults)
             {

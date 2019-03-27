@@ -7,18 +7,18 @@ namespace FreeskiDb.Persistence.CosmosDb
 {
     public interface ICosmosClient
     {
-        Task CreateDatabaseIfNotExistsAsync(string databaseId);
+        Task CreateDatabaseIfNotExistsAsync();
 
-        Task DeleteDatabaseAsync(string databaseId);
+        Task DeleteDatabaseAsync();
 
-        Task CreateCollectionIfNotExistsAsync(string databaseId, string collectionId);
+        Task CreateCollectionIfNotExistsAsync();
 
-        Task DeleteCollectionAsync(string databaseId, string collectionId);
+        Task DeleteCollectionAsync();
 
-        Task CreateDocument(Uri documentCollectionUri, object document);
+        Task CreateDocument(object document);
 
-        Task<IEnumerable<T>> ExecuteQuery<T>(Uri documentCollectionUri, string query);
+        Task<IEnumerable<T>> ExecuteQuery<T>(string query);
 
-        Task<IEnumerable<T>> ExecuteQuery<T>(Uri documentCollectionUri, SqlQuerySpec query);
+        Task<IEnumerable<T>> ExecuteQuery<T>(SqlQuerySpec query);
     }
 }

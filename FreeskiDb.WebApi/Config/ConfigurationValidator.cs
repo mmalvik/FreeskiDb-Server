@@ -9,10 +9,7 @@ namespace FreeskiDb.WebApi.Config
         private static readonly List<string> ConfigKeys = new List<string>
         {
             "CosmosUri",
-            "CosmosKey",
-            //"AzureSearchUri",
-            //"AzureSearchKey",
-            //"AzureSearchServiceName"
+            "CosmosKey"
         };
 
         public static void Vaildate(IConfiguration configuration)

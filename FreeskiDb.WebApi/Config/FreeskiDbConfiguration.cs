@@ -9,14 +9,5 @@ namespace FreeskiDb.WebApi.Config
 
         [JsonProperty("CosmosKey")]
         public string CosmosKey  { get; set; }
-
-        [JsonProperty("AzureSearchUri")]
-        public string AzureSearchUri { get; set; }
-
-        [JsonProperty("AzureSearchKey")]
-        public string AzureSearchKey { get; set; }
-
-        [JsonProperty("AzureSearchServiceName")]
-        public string AzureSearchServiceName { get; set; }
     }
 }
