@@ -6,7 +6,7 @@ using MediatR;
 
 namespace FreeskiDb.Persistence.Skis.Commands.CreateSki
 {
-    public class CreateSkiCommandHandler : IRequestHandler<CreateSkiCommand, Unit>
+    public class CreateSkiCommandHandler : IRequestHandler<CreateSkiCommand, Ski>
     {
         private readonly ICosmosClient _cosmosClient;
 
@@ -15,13 +15,13 @@ namespace FreeskiDb.Persistence.Skis.Commands.CreateSki
             _cosmosClient = cosmosClient;
         }
 
-        public async Task<Unit> Handle(CreateSkiCommand request, CancellationToken cancellationToken)
+        public async Task<Ski> Handle(CreateSkiCommand request, CancellationToken cancellationToken)
         {
             var ski = new Ski(request.Brand, request.Model);
 
             await _cosmosClient.CreateDocument(ski);
 
-            return Unit.Value;
+            return ski;
         }
     }
 }

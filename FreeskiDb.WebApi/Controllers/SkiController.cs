@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FreeskiDb.Persistence.Entities;
+using FreeskiDb.Persistence.Skis.Commands.CreateSki;
 using FreeskiDb.Persistence.Skis.Queries.GetSkiDetails;
 using FreeskiDb.Persistence.Skis.Queries.GetSkiList;
 using MediatR;
@@ -33,14 +34,21 @@ namespace FreeskiDb.WebApi.Controllers
         {
             var guid = Guid.Parse(id);
             var result = await _mediator.Send(new GetSkiDetailsQuery(guid));
+
+            if (result.Ski == null)
+            {
+                return NotFound($"Could not find ski with id: {id}");
+            }
+
             return result;
         }
 
         // POST api/ski
         [HttpPost]
-        public async Task Post([FromBody] Ski value)
+        public async Task<ActionResult<Ski>> Post([FromBody] Ski value)
         {
-            return;
+            var result = await _mediator.Send(new CreateSkiCommand {Brand = value.Brand, Model = value.Model});
+            return CreatedAtAction($"{nameof(Get)}", result);
         }
 
         // PUT api/ski/5
