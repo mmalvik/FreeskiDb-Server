@@ -47,9 +47,23 @@ namespace FreeskiDb.Persistence.CosmosDb
             await _documentClient.DeleteDocumentCollectionAsync(_documentCollectionUri);
         }
 
-        public async Task CreateDocument(object document)
+        public async Task<ResourceResponse<Document>> CreateDocument(object document)
         {
-            await _documentClient.CreateDocumentAsync(_documentCollectionUri, document);
+            return await _documentClient.CreateDocumentAsync(_documentCollectionUri, document);
+        }
+
+        public async Task<ResourceResponse<Document>> ReadDocument(Guid documentId)
+        {
+            var documentUri = UriFactory.CreateDocumentUri(_configuration.DatabaseId, _configuration.CollectionId,
+                documentId.ToString());
+            return await _documentClient.ReadDocumentAsync(documentUri);
+        }
+
+        public async Task DeleteDocument(Guid documentId)
+        {
+            var documentUri = UriFactory.CreateDocumentUri(_configuration.DatabaseId, _configuration.CollectionId,
+                documentId.ToString());
+            await _documentClient.DeleteDocumentAsync(documentUri);
         }
 
         public async Task<IEnumerable<T>> ExecuteQuery<T>(string query)

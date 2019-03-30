@@ -1,12 +1,12 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using FreeskiDb.Persistence.CosmosDb;
-using FreeskiDb.Persistence.Entities;
 using MediatR;
 
 namespace FreeskiDb.Persistence.Skis.Commands.CreateSki
 {
-    public class CreateSkiCommandHandler : IRequestHandler<CreateSkiCommand, Ski>
+    public class CreateSkiCommandHandler : IRequestHandler<CreateSkiCommand, Guid>
     {
         private readonly ICosmosClient _cosmosClient;
 
@@ -15,13 +15,11 @@ namespace FreeskiDb.Persistence.Skis.Commands.CreateSki
             _cosmosClient = cosmosClient;
         }
 
-        public async Task<Ski> Handle(CreateSkiCommand request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreateSkiCommand request, CancellationToken cancellationToken)
         {
-            var ski = new Ski(request.Brand, request.Model);
+            var result = await _cosmosClient.CreateDocument(request.Ski);
 
-            await _cosmosClient.CreateDocument(ski);
-
-            return ski;
+            return Guid.Parse(result.Resource.Id);
         }
     }
 }

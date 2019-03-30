@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FreeskiDb.Persistence.Entities;
 using FreeskiDb.Persistence.Skis.Commands.CreateSki;
+using FreeskiDb.Persistence.Skis.Commands.DeleteSki;
 using FreeskiDb.Persistence.Skis.Queries.GetSkiDetails;
 using FreeskiDb.Persistence.Skis.Queries.GetSkiList;
 using MediatR;
@@ -22,7 +24,7 @@ namespace FreeskiDb.WebApi.Controllers
 
         // GET api/ski
         [HttpGet]
-        public async Task<ActionResult<SkiListModel>> Get()
+        public async Task<ActionResult<IEnumerable<SkiDocument>>> Get()
         {
             var result = await _mediator.Send(new GetSkiListQuery());
             return Ok(result);
@@ -30,24 +32,18 @@ namespace FreeskiDb.WebApi.Controllers
 
         // GET api/ski/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<SkiDetails>> Get(string id)
+        public async Task<ActionResult<SkiDocument>> Get(string id)
         {
             var guid = Guid.Parse(id);
             var result = await _mediator.Send(new GetSkiDetailsQuery(guid));
-
-            if (result.Ski == null)
-            {
-                return NotFound($"Could not find ski with id: {id}");
-            }
-
-            return result;
+            return Ok(result);
         }
 
         // POST api/ski
         [HttpPost]
         public async Task<ActionResult<Ski>> Post([FromBody] Ski value)
         {
-            var result = await _mediator.Send(new CreateSkiCommand {Brand = value.Brand, Model = value.Model});
+            var result = await _mediator.Send(new CreateSkiCommand {Ski = value});
             return CreatedAtAction($"{nameof(Get)}", result);
         }
 
@@ -59,8 +55,10 @@ namespace FreeskiDb.WebApi.Controllers
 
         // DELETE api/ski/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
+            await _mediator.Send(new DeleteSkiCommand {Id = id});
+            return NoContent();
         }
     }
 }

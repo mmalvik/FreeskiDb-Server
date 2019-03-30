@@ -1,22 +1,23 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FreeskiDb.Persistence.CosmosDb;
-using FreeskiDb.Persistence.Skis.Queries.GetSkiList;
+using FreeskiDb.Persistence.Entities;
 using FreeskiDb.WebApi;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using Xunit;
 
 namespace Test.FreeskiDb.WebApi
 {
     public class SkiApiTests : IDisposable
     {
+        private const string ApiPath = "api/ski";
         private readonly TestServer _server;
         private readonly HttpClient _client;
 
@@ -24,29 +25,53 @@ namespace Test.FreeskiDb.WebApi
         {
             CosmosEmulator.Verify();
 
-            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", false).Build();
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", false)
+                .AddEnvironmentVariables()
+                .Build();
 
             _server = new TestServer(WebHost.CreateDefaultBuilder()
                 .UseStartup<Startup>()
-                //.UseConfiguration(config)
-                .ConfigureTestServices(AddMocks));
+                .UseConfiguration(config)
+                .ConfigureTestServices(services =>
+                {
+                    
+                }));
             _client = _server.CreateClient();
+
         }
 
         [Fact]
         public async Task GetSki_ReturnsSuccess()
         {
-            var response = await _client.GetAsync("api/ski");
+            var response = await _client.GetAsync(ApiPath);
 
             response.EnsureSuccessStatusCode();
         }
 
         [Fact]
-        public async Task GetSki_TwoSkisInDatabase_ReturnsTwo()
+        public async Task Post_Get_Delete()
         {
-            var response = await GetAsync<SkiListModel>("api/ski");
+            var ski = new Ski
+            {
+                Brand = "K2",
+                Model = "Hellbent",
+                TipWidth = 150,
+                WaistWidth = 120,
+                TailWidth = 140,
+                Weight = 2000
+            };
 
-            Assert.Equal(2, response.Skis.Count());
+            var response = await _client.PostAsync(ApiPath, ski);
+            response.EnsureSuccessStatusCode();
+
+            var skis = await _client.GetAsync<IEnumerable<SkiDocument>>(ApiPath);
+            Assert.Single(skis);
+
+            await _client.DeleteAsync($"{ApiPath}/{skis.First().Id}");
+
+            skis = await _client.GetAsync<IEnumerable<SkiDocument>>(ApiPath);
+            Assert.Empty(skis);
         }
 
         public void Dispose()
@@ -57,12 +82,6 @@ namespace Test.FreeskiDb.WebApi
 
         private void AddMocks(IServiceCollection services)
         {
-        }
-
-        private async Task<T> GetAsync<T>(string requestUri)
-        {
-            var content = await _client.GetStringAsync(requestUri);
-            return JsonConvert.DeserializeObject<T>(content);
         }
     }
 }

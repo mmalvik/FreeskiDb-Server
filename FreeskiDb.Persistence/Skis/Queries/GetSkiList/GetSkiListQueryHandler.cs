@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using FreeskiDb.Persistence.CosmosDb;
 using FreeskiDb.Persistence.Entities;
@@ -6,7 +7,7 @@ using MediatR;
 
 namespace FreeskiDb.Persistence.Skis.Queries.GetSkiList
 {
-    public class GetSkiListQueryHandler : IRequestHandler<GetSkiListQuery, SkiListModel>
+    public class GetSkiListQueryHandler : IRequestHandler<GetSkiListQuery, IEnumerable<SkiDocument>>
     {
         private readonly ICosmosClient _cosmosClient;
 
@@ -15,10 +16,9 @@ namespace FreeskiDb.Persistence.Skis.Queries.GetSkiList
             _cosmosClient = cosmosClient;
         }
 
-        public async Task<SkiListModel> Handle(GetSkiListQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<SkiDocument>> Handle(GetSkiListQuery request, CancellationToken cancellationToken)
         {
-            var result = await _cosmosClient.ExecuteQuery<Ski>("SELECT * FROM SkiCollection");
-            return new SkiListModel {Skis = result};
+            return await _cosmosClient.ExecuteQuery<SkiDocument>("SELECT * FROM SkiCollection");
         }
     }
 }

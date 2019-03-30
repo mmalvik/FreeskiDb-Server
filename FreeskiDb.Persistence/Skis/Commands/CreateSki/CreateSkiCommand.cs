@@ -1,13 +1,11 @@
-﻿using FreeskiDb.Persistence.Entities;
+﻿using System;
+using FreeskiDb.Persistence.Entities;
 using MediatR;
 
 namespace FreeskiDb.Persistence.Skis.Commands.CreateSki
 {
-    public class CreateSkiCommand : IRequest<Ski>
+    public class CreateSkiCommand : IRequest<Guid>
     {
-        public string Brand { get; set; }
-
-        public string Model { get; set; }
-
+        public Ski Ski { get; set; }
     }
 }

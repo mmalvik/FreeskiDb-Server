@@ -8,7 +8,7 @@ using Microsoft.Azure.Documents;
 
 namespace FreeskiDb.Persistence.Skis.Queries.GetSkiDetails
 {
-    public class GetSkiDetailsQueryHandler : IRequestHandler<GetSkiDetailsQuery, SkiDetails>
+    public class GetSkiDetailsQueryHandler : IRequestHandler<GetSkiDetailsQuery, SkiDocument>
     {
         private readonly ICosmosClient _cosmosClient;
 
@@ -17,13 +17,11 @@ namespace FreeskiDb.Persistence.Skis.Queries.GetSkiDetails
             _cosmosClient = cosmosClient;
         }
 
-        public async Task<SkiDetails> Handle(GetSkiDetailsQuery request, CancellationToken cancellationToken)
+        public async Task<SkiDocument> Handle(GetSkiDetailsQuery request, CancellationToken cancellationToken)
         {
-            var query = new SqlQuerySpec("SELECT * FROM skis WHERE skis.id = @id",
-                new SqlParameterCollection {new SqlParameter("@id", request.Id)});
-
-            var result = await _cosmosClient.ExecuteQuery<Ski>(query);
-            return result.Any() ? new SkiDetails {Ski = result.First() } : new SkiDetails();
+            var result = await _cosmosClient.ReadDocument(request.Id);
+            var skiDocument = (SkiDocument)(dynamic)result.Resource;
+            return skiDocument;
         }
     }
 }

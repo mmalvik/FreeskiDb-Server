@@ -1,6 +1,5 @@
 ﻿using System;
 using FreeskiDb.Persistence.CosmosDb;
-using FreeskiDb.Persistence.Entities;
 using FreeskiDb.Persistence.Skis.Queries.GetSkiList;
 using FreeskiDb.WebApi.Config;
 using MediatR;
@@ -51,10 +50,8 @@ namespace FreeskiDb.WebApi
             app.UseHttpsRedirection();
             app.UseMvc();
 
-            if (env.IsDevelopment())
-            {
-                CreateDevData(app.ApplicationServices.GetService<ICosmosClient>());
-            }
+
+            SetupDatabaseIfNotExists(app.ApplicationServices.GetService<ICosmosClient>());
         }
 
         private static CosmosClient CreateCosmosClient(IServiceProvider serviceProvider)
@@ -64,23 +61,21 @@ namespace FreeskiDb.WebApi
             {
                 CosmosUri = config.CosmosUri,
                 CosmosKey = config.CosmosKey,
-                DatabaseId = "FreeskiDb",
-                CollectionId = "SkiCollection"
+                DatabaseId = config.DatabaseName,
+                CollectionId = config.CollectionName
             });
 
             return cosmosClient;
         }
 
-        private void CreateDevData(ICosmosClient cosmosClient)
+        /// <summary>
+        /// Creates the necessary database and collection in CosmosDb
+        /// </summary>
+        /// <param name="cosmosClient"></param>
+        private void SetupDatabaseIfNotExists(ICosmosClient cosmosClient)
         {
-            CosmosEmulator.Verify();
-
-            cosmosClient.DeleteDatabaseAsync().Wait();
             cosmosClient.CreateDatabaseIfNotExistsAsync().Wait();
             cosmosClient.CreateCollectionIfNotExistsAsync().Wait();
-
-            cosmosClient.CreateDocument(new Ski("K2", "Hellbent"));
-            cosmosClient.CreateDocument(new Ski("4FRNT", "Hoji"));
         }
     }
 }

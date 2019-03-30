@@ -14,7 +14,7 @@ namespace FreeskiDb.WebApi
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
             var configuration = new ConfigurationBuilder()
-                //.AddJsonFile("appsettings.json", false, false)
+                .AddJsonFile("appsettings.json", true, false)
                 .AddJsonFile("appsettings.Development.json", true, false)
                 .AddEnvironmentVariables()
                 .Build();
