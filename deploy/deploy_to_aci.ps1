@@ -1,1 +1,0 @@
-az container create --resource-group Containers --file deploy_config.local.json
