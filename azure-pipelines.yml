@@ -26,5 +26,8 @@ steps:
   displayName: 'dotnet test $(buildConfiguration)'
   env: { 'CosmosUri': "$(CosmosDbEmulator.Endpoint)" }  # list of environment variables to add
 
-- script: dotnet publish --configuration $(buildConfiguration) -o output
+- script: dotnet publish FreeskiDb.WebApi\FreeskiDb.WebApi.csproj -c $(buildConfiguration) -o ../publish/
   displayName: 'dotnet publish $(buildConfiguration)'
+
+- script: cp publish/*.* $(Build.ArtifactStagingDirectory)
+  displayName: 'copy to staging directory'
