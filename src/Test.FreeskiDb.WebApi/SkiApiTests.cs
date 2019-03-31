@@ -18,6 +18,9 @@ namespace Test.FreeskiDb.WebApi
     public class SkiApiTests : IDisposable
     {
         private const string ApiPath = "api/ski";
+        private const string Volkl = "Volkl";
+        private const string BMT_94 = "BMT 94";
+
         private readonly TestServer _server;
         private readonly HttpClient _client;
 
@@ -52,15 +55,7 @@ namespace Test.FreeskiDb.WebApi
         [Fact]
         public async Task Post_Get_Delete()
         {
-            var ski = new Ski
-            {
-                Brand = "K2",
-                Model = "Hellbent",
-                TipWidth = 150,
-                WaistWidth = 120,
-                TailWidth = 140,
-                Weight = 2000
-            };
+            var ski = SkiFactory.K2Hellbent;
 
             var response = await _client.PostAsync(ApiPath, ski);
             response.EnsureSuccessStatusCode();
@@ -68,6 +63,36 @@ namespace Test.FreeskiDb.WebApi
             var skis = await _client.GetAsync<IEnumerable<SkiDocument>>(ApiPath);
             Assert.Single(skis);
 
+            await _client.DeleteAsync($"{ApiPath}/{skis.First().Id}");
+
+            skis = await _client.GetAsync<IEnumerable<SkiDocument>>(ApiPath);
+            Assert.Empty(skis);
+        }
+
+        [Fact]
+        public async Task Post_Get_Put_Delete()
+        {
+            // POST new ski
+            var ski = SkiFactory.K2Hellbent;
+            var response = await _client.PostAsync(ApiPath, ski);
+            response.EnsureSuccessStatusCode();
+
+            // GET all skis
+            var skis = await _client.GetAsync<IEnumerable<SkiDocument>>(ApiPath);
+            Assert.Single(skis);
+
+            // Update ski and PUT
+            var skiToUpdate = (Ski) skis.First();
+            skiToUpdate.Brand = Volkl;
+            skiToUpdate.Model = BMT_94;
+            await _client.PutAsync($"{ApiPath}/{skis.First().Id.ToString()}", skiToUpdate);
+
+            // GET updated ski
+            var updatedSki = await _client.GetAsync<SkiDocument>($"{ApiPath}/{skis.First().Id}");
+            Assert.Equal(Volkl, updatedSki.Brand);
+            Assert.Equal(BMT_94, updatedSki.Model);
+
+            // DELETE ski
             await _client.DeleteAsync($"{ApiPath}/{skis.First().Id}");
 
             skis = await _client.GetAsync<IEnumerable<SkiDocument>>(ApiPath);
