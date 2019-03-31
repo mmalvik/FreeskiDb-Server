@@ -16,18 +16,22 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: dotnet build --configuration $(buildConfiguration)
+- script: dotnet build -c $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
 
 - task: azure-cosmosdb.emulator-public-preview.run-cosmosdbemulatorcontainer.CosmosDbEmulator@2
   displayName: 'Run Azure Cosmos DB Emulator container'
 
-- script: dotnet test Test.FreeskiDb.WebApi\Test.FreeskiDb.WebApi.csproj  -v n
+- script: dotnet test src\Test.FreeskiDb.WebApi\Test.FreeskiDb.WebApi.csproj  -v n
   displayName: 'dotnet test $(buildConfiguration)'
   env: { 'CosmosUri': "$(CosmosDbEmulator.Endpoint)" }  # list of environment variables to add
 
-- script: dotnet publish FreeskiDb.WebApi\FreeskiDb.WebApi.csproj -c $(buildConfiguration) -o ../publish/
+- script: dotnet publish src\FreeskiDb.WebApi\FreeskiDb.WebApi.csproj -c $(buildConfiguration) -o ../../publish/
   displayName: 'dotnet publish $(buildConfiguration)'
 
-- script: cp publish/*.* $(Build.ArtifactStagingDirectory)
-  displayName: 'copy to staging directory'
+- task: CopyFiles@2
+  displayName: copy files from publish directory to artifact staging directory
+  inputs:
+    sourceFolder: 'publish\'
+    contents: '**' 
+    targetFolder: $(Build.ArtifactStagingDirectory)
