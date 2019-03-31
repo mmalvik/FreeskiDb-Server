@@ -25,3 +25,6 @@ steps:
 - script: dotnet test Test.FreeskiDb.WebApi\Test.FreeskiDb.WebApi.csproj  -v n
   displayName: 'dotnet test $(buildConfiguration)'
   env: { 'CosmosUri': "$(CosmosDbEmulator.Endpoint)" }  # list of environment variables to add
+
+- script: dotnet publish --configuration $(buildConfiguration) -o output
+  displayName: 'dotnet publish $(buildConfiguration)'
