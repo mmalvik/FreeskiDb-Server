@@ -26,12 +26,10 @@ steps:
   displayName: 'dotnet test $(buildConfiguration)'
   env: { 'CosmosUri': "$(CosmosDbEmulator.Endpoint)" }  # list of environment variables to add
 
-- script: dotnet publish src\FreeskiDb.WebApi\FreeskiDb.WebApi.csproj -c $(buildConfiguration) -o ../../publish/
-  displayName: 'dotnet publish $(buildConfiguration)'
-
-- task: CopyFiles@2
-  displayName: copy files from publish directory to artifact staging directory
+- task: DotNetCoreCLI@2
+  displayName: dotnet publish to staging directory
   inputs:
-    sourceFolder: 'publish\'
-    contents: '**' 
-    targetFolder: $(Build.ArtifactStagingDirectory)
+    command: publish
+    publishWebProjects: False
+    arguments: 'src\FreeskiDb.WebApi\FreeskiDb.WebApi.csproj -c $(BuildConfiguration) -o $(Build.ArtifactStagingDirectory)'
+    zipAfterPublish: True
