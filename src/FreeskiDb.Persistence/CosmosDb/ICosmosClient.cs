@@ -26,6 +26,8 @@ namespace FreeskiDb.Persistence.CosmosDb
         /// <returns></returns>
         Task<ResourceResponse<Document>> ReadDocument(Guid documentId);
 
+        Task<ResourceResponse<Document>> UpsertDocument(object document);
+
         Task DeleteDocument(Guid documentId);
 
         Task<IEnumerable<T>> ExecuteQuery<T>(string query);

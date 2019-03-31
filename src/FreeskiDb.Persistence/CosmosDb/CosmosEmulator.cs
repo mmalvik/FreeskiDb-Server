@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
 
 namespace FreeskiDb.Persistence.CosmosDb
 {
+    [ExcludeFromCodeCoverage]
     public static class CosmosEmulator
     {
         /// <summary>

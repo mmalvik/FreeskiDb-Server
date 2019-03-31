@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FreeskiDb.Persistence.Entities;
 using FreeskiDb.Persistence.Skis.Commands.CreateSki;
 using FreeskiDb.Persistence.Skis.Commands.DeleteSki;
+using FreeskiDb.Persistence.Skis.Commands.UpdateSki;
 using FreeskiDb.Persistence.Skis.Queries.GetSkiDetails;
 using FreeskiDb.Persistence.Skis.Queries.GetSkiList;
 using MediatR;
@@ -24,6 +25,7 @@ namespace FreeskiDb.WebApi.Controllers
 
         // GET api/ski
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<SkiDocument>), 200)]
         public async Task<ActionResult<IEnumerable<SkiDocument>>> Get()
         {
             var result = await _mediator.Send(new GetSkiListQuery());
@@ -49,8 +51,10 @@ namespace FreeskiDb.WebApi.Controllers
 
         // PUT api/ski/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(string id, [FromBody] Ski value)
         {
+            await _mediator.Send(new UpdateSkiCommand {Id = Guid.Parse(id), Ski = value});
+            return NoContent();
         }
 
         // DELETE api/ski/5

@@ -59,6 +59,11 @@ namespace FreeskiDb.Persistence.CosmosDb
             return await _documentClient.ReadDocumentAsync(documentUri);
         }
 
+        public async Task<ResourceResponse<Document>> UpsertDocument(object document)
+        {
+            return await _documentClient.UpsertDocumentAsync(_documentCollectionUri, document);
+        }
+
         public async Task DeleteDocument(Guid documentId)
         {
             var documentUri = UriFactory.CreateDocumentUri(_configuration.DatabaseId, _configuration.CollectionId,

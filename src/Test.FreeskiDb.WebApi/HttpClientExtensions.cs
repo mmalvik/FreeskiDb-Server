@@ -25,5 +25,17 @@ namespace Test.FreeskiDb.WebApi
 
             return await client.SendAsync(request);
         }
+
+        public static async Task<HttpResponseMessage> PutAsync<T>(this HttpClient client, string requestUri, T content)
+        {
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Put,
+                RequestUri = new Uri($"{client.BaseAddress}{requestUri}"),
+                Content = new JsonContent(content)
+            };
+
+            return await client.SendAsync(request);
+        }
     }
 }
