@@ -1,5 +1,7 @@
 ## FreeskiDb-Server
 
+[![Build Status](https://dev.azure.com/mmalvik/FreeskiDb-Server/_apis/build/status/mmalvik.FreeskiDb-Server?branchName=master)](https://dev.azure.com/mmalvik/FreeskiDb-Server/_build/latest?definitionId=2&branchName=master)
+
 Just a tiny ASP.NET Core WebApi for hobby purposes.
 Uses the [Cosmos  DB](https://docs.microsoft.com/en-us/azure/cosmos-db/introduction) for storage.
 
