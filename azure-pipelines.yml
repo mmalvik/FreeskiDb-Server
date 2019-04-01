@@ -7,7 +7,12 @@
 # https://github.com/RemiBou/remibou.github.io/blob/03dcd83b728e1a741ac6d05165d4f6e5f22f8e55/_posts/2018-11-6-CI-pipeline-in-Azure-DevOps-with-CosmosDB-ASPNET-Core.md
 
 trigger:
-- master
+    branches:
+      include:
+      - master
+    paths:
+      exclude:
+      - README.md
 
 pool:
   vmImage: 'vs2017-win2016'
