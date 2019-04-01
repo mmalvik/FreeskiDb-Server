@@ -27,8 +27,16 @@ steps:
 - task: azure-cosmosdb.emulator-public-preview.run-cosmosdbemulatorcontainer.CosmosDbEmulator@2
   displayName: 'Run Azure Cosmos DB Emulator container'
 
-- script: dotnet test src\Test.FreeskiDb.WebApi\Test.FreeskiDb.WebApi.csproj  -v n
-  displayName: 'dotnet test $(buildConfiguration)'
+# - script: dotnet test src\Test.FreeskiDb.WebApi\Test.FreeskiDb.WebApi.csproj  -v n
+#   displayName: 'dotnet test $(buildConfiguration)'
+#   env: { 'CosmosUri': "$(CosmosDbEmulator.Endpoint)" }  # list of environment variables to add
+
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: test
+    projects: 'src/Test*/*.csproj'
+    arguments: '-c $(buildConfiguration)'
   env: { 'CosmosUri': "$(CosmosDbEmulator.Endpoint)" }  # list of environment variables to add
 
 - task: DotNetCoreCLI@2
