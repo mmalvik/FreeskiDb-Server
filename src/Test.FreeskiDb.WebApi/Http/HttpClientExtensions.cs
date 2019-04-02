@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
-namespace Test.FreeskiDb.WebApi
+namespace Test.FreeskiDb.WebApi.Http
 {
     public static class HttpClientExtensions
     {
@@ -31,6 +30,18 @@ namespace Test.FreeskiDb.WebApi
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Put,
+                RequestUri = new Uri($"{client.BaseAddress}{requestUri}"),
+                Content = new JsonContent(content)
+            };
+
+            return await client.SendAsync(request);
+        }
+
+        public static async Task<HttpResponseMessage> DeleteAsync<T>(this HttpClient client, string requestUri, T content)
+        {
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Delete,
                 RequestUri = new Uri($"{client.BaseAddress}{requestUri}"),
                 Content = new JsonContent(content)
             };
