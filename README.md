@@ -15,4 +15,4 @@ In order to run the tests you need the Azure Cosmos DB installed and running.
 
 Currently the emulator is only available on Windows. However Microsoft is [working on](https://feedback.azure.com/forums/263030-azure-cosmos-db/suggestions/18533509-add-documentdb-emulator-support-for-mac-os-x-and) bringing the emulator to Mac and Linux.
 
-The same can be said for the [Azure Cosmos DB Container](https://github.com/Azure/azure-cosmos-db-emulator-docker), which only runs on Windows containers 😢
+The same can be said for the [Azure Cosmos DB Emulator Container](https://github.com/Azure/azure-cosmos-db-emulator-docker), which only runs on Windows containers 😢
