@@ -2,7 +2,7 @@
 using System.Text;
 using Newtonsoft.Json;
 
-namespace Test.FreeskiDb.WebApi
+namespace Test.FreeskiDb.WebApi.Http
 {
     public class JsonContent : StringContent
     {
