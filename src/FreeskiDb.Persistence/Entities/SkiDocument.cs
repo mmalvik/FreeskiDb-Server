@@ -5,18 +5,18 @@ using Newtonsoft.Json;
 namespace FreeskiDb.Persistence.Entities
 {
     /// <summary>
-    /// Represent a ski with additional CosmosDb document information.
+    /// Represents a ski already stored in CosmosDb as a document. 
     /// </summary>
     public class SkiDocument : Ski
     {
         /// <summary>
-        /// The id of the document.
+        /// The id of the document. Genereated by CosmosDb.
         /// </summary>
         [JsonProperty("id")]
         public Guid Id { get; set; }
 
         /// <summary>
-        /// The timestamp the document was last modified.
+        /// The timestamp the document was last modified. Handled by CosmosDb.
         /// </summary>
         [JsonProperty(PropertyName = "_ts")]
         [JsonConverter(typeof(UnixDateTimeConverter))]
