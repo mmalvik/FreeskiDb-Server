@@ -3,49 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using FreeskiDb.Persistence.CosmosDb;
+using FluentAssertions;
 using FreeskiDb.Persistence.Entities;
-using FreeskiDb.WebApi;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using Test.FreeskiDb.WebApi.Http;
 using Xunit;
 
 namespace Test.FreeskiDb.WebApi
 {
-    public class SkiApiTests : IDisposable
+    public class SkiApiTests : IntegrationTestBase
     {
         private const string ApiPath = "api/ski";
-        private const string Volkl = "Volkl";
-        private const string BMT_94 = "BMT 94";
 
-        private readonly TestServer _server;
         private readonly HttpClient _client;
 
         public SkiApiTests()
         {
-            CosmosEmulator.Verify();
-
-            var config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", false)
-                .AddEnvironmentVariables()
-                .Build();
-
-            _server = new TestServer(WebHost.CreateDefaultBuilder()
-                .UseStartup<Startup>()
-                .UseConfiguration(config)
-                .ConfigureTestServices(services =>
-                {
-                    
-                }));
-            _client = _server.CreateClient();
-
+            _client = Server.CreateClient();
         }
 
         [Fact]
-        public async Task GetSki_ReturnsSuccess()
+        public async Task ShouldReturnOkOnGet()
         {
             var response = await _client.GetAsync(ApiPath);
 
@@ -53,60 +30,53 @@ namespace Test.FreeskiDb.WebApi
         }
 
         [Fact]
-        public async Task Post_Get_Delete()
+        public async Task ShouldCreateSki()
         {
-            var ski = SkiFactory.K2Hellbent;
+            var ski = new SkiBuilder().WithBrand("K2").WithModelName("Some-ski-model").Build();
 
             var response = await _client.PostAsync(ApiPath, ski);
             response.EnsureSuccessStatusCode();
 
             var skis = await _client.GetAsync<IEnumerable<SkiDocument>>(ApiPath);
-            Assert.Single(skis);
 
-            await _client.DeleteAsync($"{ApiPath}/{skis.First().Id}");
-
-            skis = await _client.GetAsync<IEnumerable<SkiDocument>>(ApiPath);
-            Assert.Empty(skis);
+            skis.Should().ContainSingle();
+            skis.First().Brand.Should().Be("K2");
         }
 
         [Fact]
-        public async Task Post_Get_Put_Delete()
+        public async Task ShouldUpdateSki()
         {
             // POST new ski
-            var ski = SkiFactory.K2Hellbent;
+            var ski = new SkiBuilder().WithBrand("K2").WithModelName("Some-ski-model").Build();
             var response = await _client.PostAsync(ApiPath, ski);
             response.EnsureSuccessStatusCode();
 
-            // GET all skis
-            var skis = await _client.GetAsync<IEnumerable<SkiDocument>>(ApiPath);
-            Assert.Single(skis);
-
-            // Update ski and PUT
-            var skiToUpdate = (Ski) skis.First();
-            skiToUpdate.Brand = Volkl;
-            skiToUpdate.Model = BMT_94;
-            await _client.PutAsync($"{ApiPath}/{skis.First().Id.ToString()}", skiToUpdate);
+            // Update ski with PUT
+            var skiId = Guid.Parse(await response.Content.ReadAsStringAsync());
+            var skiToUpdate = new SkiBuilder().WithBrand("Atomic").Build();
+            await _client.PutAsync($"{ApiPath}/{skiId}", skiToUpdate);
 
             // GET updated ski
-            var updatedSki = await _client.GetAsync<SkiDocument>($"{ApiPath}/{skis.First().Id}");
-            Assert.Equal(Volkl, updatedSki.Brand);
-            Assert.Equal(BMT_94, updatedSki.Model);
+            var updatedSki = await _client.GetAsync<SkiDocument>($"{ApiPath}/{skiId}");
+
+            updatedSki.Brand.Should().Be("Atomic");
+        }
+
+        [Fact]
+        public async Task ShouldDeleteSki()
+        {
+            // POST new ski
+            var ski = new SkiBuilder().WithBrand("K2").WithModelName("Some-ski-model").Build();
+            var response = await _client.PostAsync(ApiPath, ski);
+            response.EnsureSuccessStatusCode();
 
             // DELETE ski
-            await _client.DeleteAsync($"{ApiPath}/{skis.First().Id}");
+            var skiId = Guid.Parse(await response.Content.ReadAsStringAsync());
+            await _client.DeleteAsync($"{ApiPath}/{skiId}", skiId);
 
-            skis = await _client.GetAsync<IEnumerable<SkiDocument>>(ApiPath);
-            Assert.Empty(skis);
+            var skis = await _client.GetAsync<IEnumerable<SkiDocument>>(ApiPath);
+            skis.Should().BeEmpty();
         }
 
-        public void Dispose()
-        {
-            _client.Dispose();
-            _server.Dispose();
-        }
-
-        private void AddMocks(IServiceCollection services)
-        {
-        }
     }
 }

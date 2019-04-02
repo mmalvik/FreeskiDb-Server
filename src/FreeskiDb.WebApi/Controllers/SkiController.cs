@@ -45,9 +45,17 @@ namespace FreeskiDb.WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Ski>> Post([FromBody] Ski value)
         {
-            var result = await _mediator.Send(new CreateSkiCommand {Ski = value});
+            // TODO: Return string here instead?
+            var guidId = await _mediator.Send(new CreateSkiCommand {Ski = value});
+            var result = guidId.ToString();
             return CreatedAtAction($"{nameof(Get)}", result);
         }
+
+        // TODO: Handle multiple scenarios
+        // If a new resource is created, the origin server MUST inform the user agent via the 201 (Created) response.
+        // If an existing resource is modified, either the 200 (OK) or 204 (No Content) response codes SHOULD be
+        // sent to indicate successful completion of the request.
+        // https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.6
 
         // PUT api/ski/5
         [HttpPut("{id}")]
