@@ -1,10 +1,8 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using FreeskiDb.Persistence.CosmosDb;
 using FreeskiDb.Persistence.Entities;
 using MediatR;
-using Microsoft.Azure.Documents;
 
 namespace FreeskiDb.Persistence.Skis.Queries.GetSkiDetails
 {

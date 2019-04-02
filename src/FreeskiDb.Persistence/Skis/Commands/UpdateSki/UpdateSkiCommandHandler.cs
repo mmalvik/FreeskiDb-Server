@@ -21,7 +21,7 @@ namespace FreeskiDb.Persistence.Skis.Commands.UpdateSki
             var skiDocument = new SkiDocument
             {
                 Brand = request.Ski.Brand,
-                Model = request.Ski.Model,
+                ModelName = request.Ski.ModelName,
                 TipWidth = request.Ski.TipWidth,
                 WaistWidth = request.Ski.WaistWidth,
                 TailWidth = request.Ski.TailWidth,
