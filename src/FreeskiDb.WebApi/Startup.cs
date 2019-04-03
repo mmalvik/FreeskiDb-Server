@@ -1,5 +1,4 @@
-﻿using System;
-using FreeskiDb.Persistence.CosmosDb;
+﻿using FreeskiDb.Persistence.CosmosDb;
 using FreeskiDb.Persistence.Skis.Queries.GetSkiList;
 using FreeskiDb.WebApi.Config;
 using MediatR;
@@ -32,8 +31,6 @@ namespace FreeskiDb.WebApi
 
             services.AddCosmosClient();
 
-            //services.AddSingleton<ICosmosClient>(CreateCosmosClient);
-
             services.AddMediatR(typeof(GetSkiListQueryHandler));
         }
 
@@ -52,22 +49,7 @@ namespace FreeskiDb.WebApi
             app.UseHttpsRedirection();
             app.UseMvc();
 
-
             SetupDatabaseIfNotExists(app.ApplicationServices.GetService<ICosmosClient>());
-        }
-
-        private static CosmosClient CreateCosmosClient(IServiceProvider serviceProvider)
-        {
-            var config = serviceProvider.GetService<FreeskiDbConfiguration>();
-            var cosmosClient = new CosmosClient(new CosmosConfiguration
-            {
-                CosmosUri = config.CosmosUri,
-                CosmosKey = config.CosmosKey,
-                DatabaseId = config.DatabaseName,
-                CollectionId = config.CollectionName
-            });
-
-            return cosmosClient;
         }
 
         /// <summary>
@@ -99,7 +81,6 @@ namespace FreeskiDb.WebApi
 
                 return cosmosClient;
             });
-
 
             return services;
         }

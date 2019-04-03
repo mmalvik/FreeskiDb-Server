@@ -10,8 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Test.FreeskiDb.WebApi
 {
-
-    // TODO: Refactor this, works for now
     public class IntegrationTestBase : IDisposable
     {
         public IntegrationTestBase()
@@ -24,11 +22,10 @@ namespace Test.FreeskiDb.WebApi
                 .Build();
 
             var services = new ServiceCollection();
-            services.AddSingleton<FreeskiDbConfiguration>(p => configuration.Get<FreeskiDbConfiguration>());
+            services.AddSingleton(p => configuration.Get<FreeskiDbConfiguration>());
             services.AddCosmosClient();
 
             var serviceProvider = services.BuildServiceProvider();
-
 
             var cosmosClient = serviceProvider.GetService<ICosmosClient>();
 
