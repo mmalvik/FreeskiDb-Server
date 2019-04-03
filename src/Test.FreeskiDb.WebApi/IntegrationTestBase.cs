@@ -1,6 +1,7 @@
 ﻿using System;
 using FreeskiDb.Persistence.CosmosDb;
 using FreeskiDb.WebApi;
+using FreeskiDb.WebApi.Config;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
@@ -17,25 +18,26 @@ namespace Test.FreeskiDb.WebApi
         {
             CosmosEmulator.Verify();
 
-            var config = new ConfigurationBuilder()
+            var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", false)
                 .AddEnvironmentVariables()
                 .Build();
 
-            var cosmosClient = new CosmosClient(new CosmosConfiguration
-            {
-                CollectionId = "IntTestSkiCollection",
-                DatabaseId = "FreeskiDb",
-                CosmosUri = "https://localhost:8081",
-                CosmosKey = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw=="
-            });
+            var services = new ServiceCollection();
+            services.AddSingleton<FreeskiDbConfiguration>(p => configuration.Get<FreeskiDbConfiguration>());
+            services.AddCosmosClient();
+
+            var serviceProvider = services.BuildServiceProvider();
+
+
+            var cosmosClient = serviceProvider.GetService<ICosmosClient>();
 
             Server = new TestServer(WebHost.CreateDefaultBuilder()
                 .UseStartup<Startup>()
-                .UseConfiguration(config)
-                .ConfigureTestServices(services =>
+                .UseConfiguration(configuration)
+                .ConfigureTestServices(s =>
                 {
-                    services.AddSingleton(cosmosClient);
+                    s.AddSingleton(cosmosClient);
                 }));
 
             cosmosClient.DeleteCollectionAsync().Wait();

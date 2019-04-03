@@ -30,7 +30,9 @@ namespace FreeskiDb.WebApi
             var config = Configuration.Get<FreeskiDbConfiguration>();
             services.AddSingleton(config);
 
-            services.AddSingleton<ICosmosClient>(CreateCosmosClient);
+            services.AddCosmosClient();
+
+            //services.AddSingleton<ICosmosClient>(CreateCosmosClient);
 
             services.AddMediatR(typeof(GetSkiListQueryHandler));
         }
@@ -76,6 +78,30 @@ namespace FreeskiDb.WebApi
         {
             cosmosClient.CreateDatabaseIfNotExistsAsync().Wait();
             cosmosClient.CreateCollectionIfNotExistsAsync().Wait();
+        }
+    }
+
+    public static class ServiceCollectionExtensions
+    {
+        public static IServiceCollection AddCosmosClient(this IServiceCollection services)
+        {
+            services.AddSingleton<ICosmosClient>(p =>
+            {
+                var config = p.GetService<FreeskiDbConfiguration>();
+
+                var cosmosClient = new CosmosClient(new CosmosConfiguration
+                {
+                    CosmosUri = config.CosmosUri,
+                    CosmosKey = config.CosmosKey,
+                    DatabaseId = config.DatabaseName,
+                    CollectionId = config.CollectionName
+                });
+
+                return cosmosClient;
+            });
+
+
+            return services;
         }
     }
 }
